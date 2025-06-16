@@ -1713,15 +1713,13 @@ void AlterCommands::validate(const StoragePtr & table, ContextPtr context) const
 
             String from_nested_table_name = Nested::extractTableName(command.column_name);
             String to_nested_table_name = Nested::extractTableName(command.rename_to);
-            bool from_nested = from_nested_table_name != command.column_name;
-            bool to_nested = to_nested_table_name != command.rename_to;
 
-            if (from_nested && to_nested)
+            if (all_columns.get(command.column_name).nested_column)
             {
                 if (from_nested_table_name != to_nested_table_name)
                     throw Exception(ErrorCodes::BAD_ARGUMENTS, "Cannot rename column from one nested name to another");
             }
-            else if (!from_nested && !to_nested)
+            else if (!all_columns.get(command.column_name).nested_column)
             {
                 all_columns.rename(command.column_name, command.rename_to);
                 renamed_columns.emplace(command.column_name);

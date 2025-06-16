@@ -78,6 +78,7 @@ ColumnDescription & ColumnDescription::operator=(const ColumnDescription & other
     settings = other.settings;
     ttl = other.ttl ? other.ttl->clone() : nullptr;
     statistics = other.statistics;
+    nested_column = other.nested_column;
 
     return *this;
 }
@@ -101,6 +102,7 @@ ColumnDescription & ColumnDescription::operator=(ColumnDescription && other) noe
     other.ttl.reset();
 
     statistics = std::move(other.statistics);
+    nested_column = other.nested_column;
 
     return *this;
 }
@@ -115,7 +117,8 @@ bool ColumnDescription::operator==(const ColumnDescription & other) const
         && statistics == other.statistics
         && ast_to_str(codec) == ast_to_str(other.codec)
         && settings == other.settings
-        && ast_to_str(ttl) == ast_to_str(other.ttl);
+        && ast_to_str(ttl) == ast_to_str(other.ttl) 
+        && nested_column == other.nested_column;
 }
 
 String formatASTStateAware(IAST & ast, IAST::FormatState & state)
@@ -443,6 +446,7 @@ void ColumnsDescription::flattenNested()
             /// TODO: what to do with default expressions?
             nested_column.name = Nested::concatenateName(column.name, names[i]);
             nested_column.type = std::make_shared<DataTypeArray>(elements[i]);
+            nested_column.nested_column = true;
 
             addSubcolumns(nested_column.name, nested_column.type);
             columns.get<0>().insert(it, std::move(nested_column));
