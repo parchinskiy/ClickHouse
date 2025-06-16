@@ -476,7 +476,7 @@ ASTPtr InterpreterCreateQuery::formatColumns(const ColumnsDescription & columns)
         column_declaration->name = column.name;
 
         ParserDataType type_parser;
-        String type_name = column.type->getName();
+        String type_name = column.type->getName(); 
         const char * type_name_pos = type_name.data();
         const char * type_name_end = type_name_pos + type_name.size();
         column_declaration->type = parseQuery(type_parser, type_name_pos, type_name_end, "data type", 0, DBMS_DEFAULT_MAX_PARSER_DEPTH, DBMS_DEFAULT_MAX_PARSER_BACKTRACKS);

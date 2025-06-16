@@ -90,6 +90,7 @@ struct ColumnDescription
     SettingsChanges settings;
     ASTPtr ttl;
     ColumnStatisticsDescription statistics;
+    bool nested_column = false;
 
     ColumnDescription() = default;
     ColumnDescription(const ColumnDescription & other) { *this = other; }
